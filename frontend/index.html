@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CampusSort</title>
+</head>
+
+<body>
+
+    <h1>CampusSort</h1>
+
+    <h2>Available Jobs</h2>
+
+    <button onclick="loadJobs()">Load Jobs</button>
+
+    <div id="jobs"></div>
+
+    <script>
+
+    function loadJobs() {
+
+        fetch("http://localhost:8080/api/jobs")
+            .then(response => response.json())
+            .then(jobs => {
+
+                const jobsDiv = document.getElementById("jobs");
+
+                jobsDiv.innerHTML = "";
+
+                jobs.forEach(job => {
+
+                    jobsDiv.innerHTML += `
+                        <div>
+                            <h3>${job.title}</h3>
+                            <p>${job.location}</p>
+                            <p>Minimum CGPA: ${job.minimumCgpa}</p>
+
+                            <button onclick="applyJob(${job.id})">
+                                Apply
+                            </button>
+                        </div>
+
+                        <hr>
+                    `;
+
+                });
+
+            });
+    }
+
+
+    function applyJob(jobId) {
+
+        fetch("http://localhost:8080/api/applications", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                studentId: 1,
+                jobId: jobId
+            })
+
+        })
+        .then(response => response.json())
+        .then(result => {
+
+            alert("Application submitted!");
+
+        });
+
+    }
+
+</script>
+
+</body>
+</html>
